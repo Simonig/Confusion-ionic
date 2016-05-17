@@ -40,8 +40,40 @@ angular.module('conFusion.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
+
+  $scope.reservation = {};
+
+  // Create the reserve modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/reserve.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.reserveform = modal;
+  });
+
+  // Triggered in the reserve modal to close it
+  $scope.closeReserve = function() {
+    $scope.reserveform.hide();
+  };
+
+  // Open the reserve modal
+  $scope.reserve = function() {
+    $scope.reserveform.show();
+  };
+
+  // Perform the reserve action when the user submits the reserve form
+  $scope.doReserve = function() {
+    console.log('Doing reservation', $scope.reservation);
+
+    // Simulate a reservation delay. Remove this and replace with your reservation
+    // code if using a server system
+    $timeout(function() {
+      $scope.closeReserve();
+    }, 1000);
+  };
 })
-  .controller('MenuController', ['$scope', 'menuFactory', function($scope, menuFactory) {
+ .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
+
+  $scope.baseURL = baseURL;
 
     $scope.tab = 1;
     $scope.filtText = '';
@@ -117,7 +149,8 @@ angular.module('conFusion.controllers', [])
     };
   }])
 
-  .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
+ .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function($scope, $stateParams, menuFactory, baseURL) {
+            $scope.baseURL = baseURL;
 
     $scope.dish = {};
     $scope.showDish = false;
@@ -175,4 +208,14 @@ angular.module('conFusion.controllers', [])
       );
     $scope.promotion = menuFactory.getPromotion().get({id:0});
   }])
-;
+
+    .controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
+
+    $scope.baseURL = baseURL;
+    $scope.leaders = corporateFactory.query();
+    $scope.showDish = false;
+    $scope.message="Loading ...";
+  }
+
+
+]);
