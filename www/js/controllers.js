@@ -71,6 +71,8 @@ angular.module('conFusion.controllers', [])
     }, 1000);
   };
 
+
+
   $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', {
     scope: $scope
   }).then(function(popover) {
@@ -79,8 +81,8 @@ angular.module('conFusion.controllers', [])
   });
 
 
-  $scope.openPopover = function($event, index) {
-    $scope.index = index;
+  $scope.openPopover = function($event,dish) {
+    $scope.index = dish;
     $scope.popover.show($event);
   };
   $scope.closePopover = function() {
@@ -175,12 +177,12 @@ angular.module('conFusion.controllers', [])
     };
   }])
 
- .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', 'favoriteFactory',
-   function($scope, $stateParams, menuFactory, baseURL, favoriteFactory) {
+ .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', 'favoriteFactory', '$ionicModal',
+   function($scope, $stateParams, menuFactory, baseURL, favoriteFactory, $ionicModal) {
 
 
             $scope.baseURL = baseURL;
-     console.log(baseURL);
+
 
     $scope.dish = {};
     $scope.showDish = false;
@@ -200,7 +202,44 @@ angular.module('conFusion.controllers', [])
      $scope.addFavorite = function (index) {
        console.log("index is " + index);
        favoriteFactory.addToFavorites(index);
+       $scope.popover.hide();
      };
+
+     /// Comment Modal ////
+     $scope.commentmodal = {};
+
+     $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
+       scope: $scope
+     }).then(function(modal) {
+       $scope.commentmodal = modal;
+     });
+
+     // Triggered in the reserve modal to close it
+     $scope.closeComment = function() {
+       $scope.commentmodal.hide();
+     };
+
+     // Open the reserve modal
+     $scope.showComment = function(dish) {
+       $scope.dish = dish;
+       $scope.commentmodal.show();
+       $scope.popover.hide();
+
+     };
+
+     $scope.mycomment = {rating:5, comment:"", author:"", date:""};
+
+     $scope.submitComment = function() {
+
+       $scope.mycomment.date = new Date().toISOString();
+       $scope.dish.comments.push($scope.mycomment);
+       menuFactory.getDishes().update({id: $scope.dish.id},$scope.dish);
+       $scope.commentmodal.hide();
+
+     };
+
+
+     /////
 
 
 

@@ -1,9 +1,9 @@
 <ion-popover-view ng-controller="DishDetailController">
   <ion-content>
     <ion-list>
-      <ion-item menu-close href="#/app/home">
+      <ion-item menu-close ng-click="showComment(index)">
       Add Comment
-      </ion-item>  <ion-item menu-close  ng-click="addFavorite(index)">
+      </ion-item>  <ion-item menu-close  ng-click="addFavorite(index.id)">
       Add to Favorites
       </ion-item>
     </ion-content>
